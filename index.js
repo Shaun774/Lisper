@@ -9,17 +9,23 @@ let app = new express();
 app.use(express.static('public'))
 
 // 4. When the user goes to the home page it should render the index.ejs file.
-app.get("/",async (req,res)=>{
-    let result =await axios.get("https://secrets-api.appbrewery.com/random");
-    console.log(result.data)
-    let secret = result.data.secret;
-    let user = result.data.username;
-    res.render("index.ejs",{secret:secret,user:user});
+app.get("/", async (req, res) => {
+    try {
+        let result = await axios.get("https://secrets-api.appbrewery.com/random");
+        let secret = result.data.secret;
+        let user = result.data.username;
+        res.render("index.ejs", { secret: secret, user: user });
+    }
+    catch(error){
+        console.log(error.response.data)
+        res.status(500)
+    }
+    
 });
 // 5. Use axios to get a random secret and pass it to index.ejs to display the
 // secret and the username of the secret.
 
 // 6. Listen on your predefined port and start the server.
-app.listen(3000,()=>{
+app.listen(3000, () => {
     console.log("Port running on 3000.....")
 })
